@@ -15,3 +15,10 @@ URL: https://geo-gift-lab.github.io/kocmi/, https://github.com/geo-gift-lab/kocm
 BugReports: https://github.com/geo-gift-lab/kocmi/issues
 Depends: 
     R (>= 4.1.0)
+Imports: 
+    gtools,
+    Matrix,
+    Rdsdp,
+    RSpectra,
+    stats,
+    utils
