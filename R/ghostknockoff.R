@@ -157,7 +157,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   if(verbose) cat(sprintf("Solving %s smaller SDPs ... \n", n.blocks))
   s_asdp_list = list()
   if(verbose) pb = utils::txtProgressBar(min = 0, max = n.blocks, style = 3)
-  for(k in 1:n.blocks) {
+  for (k in seq_len(n.blocks)) {
     s_asdp_list[[k]] = create.solve_sdp_M(as.matrix(cluster_sol$subSigma[[k]]), M=M, gaptol=gaptol, maxit=maxit)
     if(verbose) utils::setTxtProgressBar(pb, k)
   }
@@ -176,9 +176,8 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   # Maximize the shrinkage factor
   if(verbose) cat(sprintf("Combinining the solutions of the %s smaller SDPs ... ", n.blocks))
   tol = 1e-9
-  maxitr=1000
+  maxitr = 1000
   gamma_range = c(seq(0,0.1,len=11)[-11],seq(0.1,1,len=10)) # change from 100 to 20 to make it accurate near 0 and scalable.
-  #options(warn=-1)
   gamma_opt = gtools::binsearch( \(i) {
     G = (M+1)/M*Sigma - gamma_range[i]*diag(s_asdp)
     lambda_min = suppressWarnings({RSpectra::eigs(G, 1, which = "SR",
@@ -201,8 +200,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   }
   if(verbose) cat("done. \n")
 
-  # Return result
-  s_asdp_scaled
+  return(s_asdp_scaled)
 }
 
 divide.sdp = \(Sigma, max.size) {
@@ -257,7 +255,7 @@ merge_clusters = \(clusters, max.size) {
   clusters.new = rep(0, length(clusters))
   g = 1
   g.size = 0
-  for(k in 1:max(clusters)) {
+  for (k in seq_len(max(clusters))) {
     if(g.size + cluster.sizes[k] > max.size) {
       g = g + 1
       g.size = 0
@@ -306,14 +304,13 @@ x_knockoff  = \(x, M = 50, seed = 42){
                                                                  M * n.sample), sum(permute.index) * M, n.sample)
 
 
-  for(i in 1:n.sample){
+  for (i in seq_len(n.sample)) {
     Normal_k = matrix(Normal_50Studies[, i], nrow = n.G)
-
     x_ik = as.vector(P.each %*% t(x[i, , drop = F])) + Normal_k
-
-    for(j in 1:M){
+    for (j in seq_len(M)) {
       x.knockoff[i,,j] <- x_ik[,j]
     }
   }
+
   return(x.knockoff)
 }

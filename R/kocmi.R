@@ -21,7 +21,7 @@ KOCMI.net = \(expr, k=3, M, tf=colnames(expr), pcc = 0){
 transMatrix = \(expr){
   tf = colnames(expr)
   n = length(tf)
-  re = matrix(0, n*(n-1), 4, dimnames = list(c(), c('regulator', 'target', 'cs', 'pvalue')))
+  re = matrix(0, n*(n-1), 4, dimnames = list(c(), c("regulator", "target", "cs", "pvalue")))
   re = as.data.frame(re)
   re$regulator = rep(tf, each = (n-1))
   target = c()
@@ -32,7 +32,7 @@ transMatrix = \(expr){
   return(re)
 }
 
-KOCMI = \(data, cause, effect, k=3, M, df.ko0 = NULL, sigma = NULL, pcc = NULL, seed = 42){
+KOCMI = \(data, cause, effect, k=3, M = 50, df.ko0 = NULL, sigma = NULL, pcc = NULL, seed = 42){
   if(!is.null(pcc) & !is.null(sigma)){
     sigma = sigma[, colnames(sigma) != effect]
     pccnode = names(which(abs(sigma[cause,]) >= pcc))
@@ -56,11 +56,11 @@ KOCMI = \(data, cause, effect, k=3, M, df.ko0 = NULL, sigma = NULL, pcc = NULL, 
 
   cmi0 = KNN.CMI(data, cause, effect, k)
 
-  cmi0.knockoff = apply(df.ko0, 3, \(x){KNN.CMI(cbind(cause = x[,cause],effect = df.effect, df.condition), 'cause', 'effect', k)})
+  cmi0.knockoff = apply(df.ko0, 3, \(x){KNN.CMI(cbind(cause = x[,cause],effect = df.effect, df.condition), "cause", "effect", k)})
 
   df.knockoff = x_knockoff(cbind(df.cause, df.condition), M)
 
-  cmi.knockoff = apply(df.knockoff, 3, \(x){KNN.CMI(cbind(cause = x[,1], effect = df.effect, df.condition), 'cause', 'effect', k)})
+  cmi.knockoff = apply(df.knockoff, 3, \(x){KNN.CMI(cbind(cause = x[,1], effect = df.effect, df.condition), "cause", "effect", k)})
 
   cmi.knockoff = round(cmi.knockoff, digits = 8)
   cmi0.knockoff = round(cmi0.knockoff, digits = 8)
@@ -97,8 +97,8 @@ KNN.CMI = \(data, cause = "x", effect = "y", k = 3){
     n_z = c(n_z, length(which(D_z[i,] < epsilon)))
   }
 
-  c = digamma(k) - mean(digamma(n_xz)) - mean(digamma(n_yz)) + mean(digamma(n_z))
-  return(c)
+  cres = digamma(k) - mean(digamma(n_xz)) - mean(digamma(n_yz)) + mean(digamma(n_z))
+  return(cres)
 }
 
 permutation_test_mean = \(x, n_perm = 10000) {
@@ -118,12 +118,3 @@ permutation_test_mean = \(x, n_perm = 10000) {
     p_value = p_value
   ))
 }
-
-# set.seed(10824)
-# beta <- 0.01
-# z <- rnorm(100)
-# x <- sin(z) + beta * rnorm(100)
-# y <- sin(x) + exp(z) + beta * rnorm(100)
-# data <- cbind(x, y, z)
-#
-# KOCMI.net(data, k = 3, M = 40)
