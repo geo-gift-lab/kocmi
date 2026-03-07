@@ -6,7 +6,7 @@ Authors@R:
            email = "lyu.geosocial@gmail.com", 
            role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0002-6003-3800"))
-Description: What the package does (one paragraph).
+Description: Implements the knockoff conditional mutual information (KOCMI) algorithm as described in Zhang and Chen (2025) <doi:10.1126/sciadv.adu6464>, with parallel computation support via the 'parallel' package.
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
