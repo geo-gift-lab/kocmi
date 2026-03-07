@@ -252,6 +252,22 @@ divide.sdp = \(Sigma, max.size) {
   return(list(clusters=clusters, subSigma=subSigma))
 }
 
+merge.clusters = \(clusters, max.size) {
+  cluster.sizes = table(clusters)
+  clusters.new = rep(0, length(clusters))
+  g = 1
+  g.size = 0
+  for(k in 1:max(clusters)) {
+    if(g.size + cluster.sizes[k] > max.size) {
+      g = g + 1
+      g.size = 0
+    }
+    clusters.new[clusters==k] = g
+    g.size = g.size + cluster.sizes[k]
+  }
+  return(clusters.new)
+}
+
 is_posdef = \(A, tol=1e-9) {
   p = nrow(matrix(A))
 
