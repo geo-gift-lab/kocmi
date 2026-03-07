@@ -252,19 +252,22 @@ divide.sdp <- function(Sigma, max.size) {
   structure(list(clusters=clusters, subSigma=subSigma), class='knockoff.clusteredCovariance')
 }
 
-is_posdef = function(A, tol=1e-9) {
+is_posdef = \(A, tol=1e-9) {
   p = nrow(matrix(A))
 
-  if (p<500) {
+  if (p < 500) {
     lambda_min = min(eigen(A)$values)
-  }
-  else {
-    oldw <- getOption("warn")
+  } else {
+    oldw = getOption("warn")
     #options(warn = -1)
-    lambda_min = suppressWarnings(RSpectra::eigs(A, 1, which="SM", opts=list(retvec = FALSE, maxitr=100, tol))$values)
+    lambda_min = suppressWarnings{
+      RSpectra::eigs(A, 1, which="SM",
+                     opts=list(retvec = FALSE, maxitr=100, tol))$values
+    }
+      )
     options(warn = oldw)
     if( length(lambda_min)==0 ) {
-      # RSpectra::eigs did not converge. Using eigen instead."
+      # RSpectra::eigs did not converge. Using eigen instead.
       lambda_min = min(eigen(A)$values)
     }
   }
