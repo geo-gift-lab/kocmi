@@ -196,7 +196,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   if(verbose) cat("Verifying that the solution is correct ... ")
   # Verify that the solution is correct
   if (!is_posdef((M+1)/M*Sigma-diag(s_asdp_scaled,length(s_asdp_scaled)))) {
-    warning('In creation of approximate SDP knockoffs, procedure failed. Knockoffs will have no power.',immediate.=T)
+    warning("In creation of approximate SDP knockoffs, procedure failed. Knockoffs will have no power.")
     s_asdp_scaled = 0*s_asdp_scaled
   }
   if(verbose) cat("done. \n")
