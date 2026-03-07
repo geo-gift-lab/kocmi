@@ -29,8 +29,8 @@ GhostKnockoff.prelim = \(cor.G, M=5, method="asdp", max.size=500){
       #random part of knockoff
       V = matrix(1,M,M) %x% V.each
       diag(V) = diag(V) + rep(s,M)
-      V.left = try(Matrix::t(Matrix::chol(V)),silent=TRUE)
-      if(class(V.left)=="try-error"){
+      V.left = tryCatch(Matrix::t(Matrix::chol(V)), error = \(e) NULL)
+      if (is.null(V.left)) {
         svd.fit = svd(V)
         u = svd.fit$u
         svd.fit$d[is.na(svd.fit$d)] = 0
