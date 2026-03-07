@@ -249,7 +249,7 @@ divide.sdp <- function(Sigma, max.size) {
   }
 
   # Return the cluster assignments and the cluster covariance submatrices
-  structure(list(clusters=clusters, subSigma=subSigma), class='knockoff.clusteredCovariance')
+  return(list(clusters=clusters, subSigma=subSigma))
 }
 
 is_posdef = \(A, tol=1e-9) {
