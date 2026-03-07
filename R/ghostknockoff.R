@@ -210,22 +210,22 @@ divide.sdp = \(Sigma, max.size) {
   # Add a small perturbation to stabilize the clustering in the case of highly symmetrical matrices
   p = ncol(Sigma)
   Eps = matrix(rnorm(p*p),p)*1e-6
-  dissimilarity = 1 - abs(cov2cor(Sigma)+Eps)
-  distance = as.dist(dissimilarity)
+  dissimilarity = 1 - abs(Matrix::cov2cor(Sigma)+Eps)
+  distance = stats::as.dist(dissimilarity)
 
   # Hierarchical clustering
-  fit = hclust(distance, method="single")
+  fit = stats::hclust(distance, method="single")
   # Cut tree into clusters of size smaller than a threshold
   n.blocks.min = 1
   n.blocks.max = ncol(Sigma)
   for(it in 1:100) {
     n.blocks = ceiling((n.blocks.min+n.blocks.max)/2)
-    clusters = cutree(fit, k=n.blocks)
+    clusters = stats::cutree(fit, k=n.blocks)
     size = max(table(clusters))
-    if(size <= max.size) {
+    if (size <= max.size) {
       n.blocks.max = n.blocks
     }
-    if(size >= max.size) {
+    if (size >= max.size) {
       n.blocks.min = n.blocks
     }
     if(n.blocks.min == n.blocks.max) {
