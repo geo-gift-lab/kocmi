@@ -1,5 +1,5 @@
 Package: kocmi
-Title: What the Package Does (One Line, Title Case)
+Title: Knockoff Conditional Mutual Information
 Version: 0.0.0.9000
 Authors@R: 
     person("Wenbo", "Lyu", , "lyu.geosocial@gmail.com", role = c("aut", "cre"),
