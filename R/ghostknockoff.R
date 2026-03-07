@@ -141,9 +141,9 @@ create.solve_sdp_M = \(Sigma, M=1, gaptol=1e-6, maxit=1000, verbose=FALSE) {
   return(s*diag(Sigma))
 }
 
-create.solve_asdp_M <- function(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbose=FALSE) {
+create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbose=FALSE) {
   # Check that covariance matrix is symmetric
-  stopifnot(isSymmetric(Sigma))
+  stopifnot(Matrix::isSymmetric(Sigma))
 
   if(ncol(Sigma) <= max.size) return(create.solve_sdp_M(Sigma, M=M, gaptol=gaptol, maxit=maxit, verbose=verbose))
 
@@ -156,7 +156,7 @@ create.solve_asdp_M <- function(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=100
   # Solve the smaller SDPs corresponding to each block
   if(verbose) cat(sprintf("Solving %s smaller SDPs ... \n", n.blocks))
   s_asdp_list = list()
-  if(verbose) pb <- utils::txtProgressBar(min = 0, max = n.blocks, style = 3)
+  if(verbose) pb = utils::txtProgressBar(min = 0, max = n.blocks, style = 3)
   for(k in 1:n.blocks) {
     s_asdp_list[[k]] = create.solve_sdp_M(as.matrix(cluster_sol$subSigma[[k]]), M=M, gaptol=gaptol, maxit=maxit)
     if(verbose) utils::setTxtProgressBar(pb, k)
@@ -179,18 +179,18 @@ create.solve_asdp_M <- function(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=100
   maxitr=1000
   gamma_range = c(seq(0,0.1,len=11)[-11],seq(0.1,1,len=10)) # change from 100 to 20 to make it accurate near 0 and scalable.
   #options(warn=-1)
-  gamma_opt = gtools::binsearch( function(i) {
+  gamma_opt = gtools::binsearch( \(i) {
     G = (M+1)/M*Sigma - gamma_range[i]*diag(s_asdp)
-    lambda_min = suppressWarnings(RSpectra::eigs(G, 1, which = "SR", opts = list(retvec = FALSE, maxitr=maxitr, tol=tol))$values)
+    lambda_min = suppressWarnings({RSpectra::eigs(G, 1, which = "SR",
+                                                  opts = list(retvec = FALSE, maxitr=maxitr, tol=tol))$values})
     if (length(lambda_min)==0) {
       #lambda_min = 1  # Not converged
       # RSpectra::eigs did not converge. Using eigen instead."
       lambda_min = min(eigen(G)$values)
     }
-    lambda_min
+    return(lambda_min)
   }, range=c(1,length(gamma_range)) )
   s_asdp_scaled = gamma_range[min(gamma_opt$where)]*s_asdp
-  options(warn=0)
   if(verbose) cat("done. \n")
 
   if(verbose) cat("Verifying that the solution is correct ... ")
