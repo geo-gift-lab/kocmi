@@ -218,7 +218,7 @@ divide.sdp = \(Sigma, max.size) {
   # Cut tree into clusters of size smaller than a threshold
   n.blocks.min = 1
   n.blocks.max = ncol(Sigma)
-  for(it in 1:100) {
+  for (it in 1:100) {
     n.blocks = ceiling((n.blocks.min+n.blocks.max)/2)
     clusters = stats::cutree(fit, k=n.blocks)
     size = max(table(clusters))
@@ -228,14 +228,14 @@ divide.sdp = \(Sigma, max.size) {
     if (size >= max.size) {
       n.blocks.min = n.blocks
     }
-    if(n.blocks.min == n.blocks.max) {
+    if (n.blocks.min == n.blocks.max) {
       break
     }
   }
 
   # Merge small clusters
   clusters.new = merge.clusters(clusters, max.size)
-  while(sum(clusters.new != clusters)>0) {
+  while(sum(clusters.new != clusters) > 0) {
     clusters = clusters.new
     clusters.new = merge.clusters(clusters, max.size)
   }
