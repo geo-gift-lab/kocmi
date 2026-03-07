@@ -205,7 +205,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   s_asdp_scaled
 }
 
-divide.sdp <- function(Sigma, max.size) {
+divide.sdp = \(Sigma, max.size) {
   # Convert the covariance matrix into a dissimilarity matrix
   # Add a small perturbation to stabilize the clustering in the case of highly symmetrical matrices
   p = ncol(Sigma)
