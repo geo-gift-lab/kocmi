@@ -134,7 +134,7 @@ create.solve_sdp_M = \(Sigma, M=1, gaptol=1e-6, maxit=1000, verbose=FALSE) {
 
   # Verify that the solution is correct
   if (all(s==0)) {
-    warning('In creation of SDP knockoffs, procedure failed. Knockoffs will have no power.',immediate.=T)
+    warning("In creation of SDP knockoffs, procedure failed. Knockoffs will have no power.")
   }
 
   # Scale back the results for a covariance matrix
