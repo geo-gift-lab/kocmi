@@ -257,7 +257,7 @@ merge_clusters = \(clusters, max.size) {
   clusters.new = rep(0, length(clusters))
   g = 1
   g.size = 0
-  for(k in 1:max(clusters)) {
+  for (k in seq_len(max(clusters))) {
     if(g.size + cluster.sizes[k] > max.size) {
       g = g + 1
       g.size = 0
