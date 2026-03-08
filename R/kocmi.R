@@ -1,21 +1,20 @@
-KOCMI.net=function(expr, k=3, M, tf=colnames(expr), pcc = 0){
-  expr <- as.data.frame(expr)
-  expr <- expr[,tf]
-  weightNet <- transMatrix(expr)
-  if(pcc == 0){
-    df.ko0 <- x_knockoff(expr,M)
-    a <- apply(weightNet,1,function(x){KOCMI(expr,x[1],x[2],k,M,df.ko0)})
-  }else{
-    sigma <- cor(expr)
-    a <- apply(weightNet,1,function(x){KOCMI(expr,x[1],x[2],k,M,sigma=sigma,pcc=pcc)})
+KOCMI.net = \(expr, k=3, M, tf=colnames(expr), pcc = 0){
+  expr = as.data.frame(expr)
+  expr = expr[,tf]
+  weightNet = transMatrix(expr)
+  if (pcc == 0) {
+    df.ko0 = x_knockoff(expr,M)
+    a = apply(weightNet,1,function(x){KOCMI(expr,x[1],x[2],k,M,df.ko0)})
+  } else {
+    sigma = cor(expr)
+    a = apply(weightNet,1,function(x){KOCMI(expr,x[1],x[2],k,M,sigma=sigma,pcc=pcc)})
   }
-  p.value <- lapply(a,function(x){x$pvalue})
-  t1 <- lapply(a,function(x){x$t1})
-  weightNet$pvalue <- as.numeric(p.value)
-  weightNet$p_adj  <- as.numeric(p.adjust(p.value,method = 'BH'))
-  weightNet$t1 <- as.numeric(t1)
-  weightNet$cs <- abs(as.numeric(t1))
-  weightNet
+  p.value = lapply(a,\(x) x$pvalue)
+  t1 = lapply(a,\(x) x$t1)
+  weightNet$pvalue = as.numeric(p.value)
+  weightNet$p_adj = as.numeric(stats::p.adjust(p.value,method = 'BH'))
+  weightNet$t1 = as.numeric(t1)
+  weightNet$cs = abs(as.numeric(t1))
   return(weightNet)
 }
 
