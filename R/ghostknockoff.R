@@ -209,7 +209,7 @@ divide.sdp = \(Sigma, max.size) {
   # Convert the covariance matrix into a dissimilarity matrix
   # Add a small perturbation to stabilize the clustering in the case of highly symmetrical matrices
   p = ncol(Sigma)
-  Eps = matrix(rnorm(p*p),p)*1e-6
+  Eps = matrix(stats::rnorm(p*p),p)*1e-6
   dissimilarity = 1 - abs(Matrix::cov2cor(Sigma)+Eps)
   distance = stats::as.dist(dissimilarity)
 
