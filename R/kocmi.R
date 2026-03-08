@@ -56,11 +56,11 @@ KOCMI = \(data, cause, effect, k=3, M = 50, df.ko0 = NULL, sigma = NULL, pcc = N
 
   cmi0 = KNN.CMI(data, cause, effect, k)
 
-  cmi0.knockoff = apply(df.ko0, 3, \(x){KNN.CMI(cbind(cause = x[,cause],effect = df.effect, df.condition), 'cause', 'effect', k)})
+  cmi0.knockoff = apply(df.ko0, 3, \(x){KNN.CMI(cbind(cause = x[,cause],effect = df.effect, df.condition), "cause", "effect", k)})
 
   df.knockoff = x_knockoff(cbind(df.cause, df.condition), M)
 
-  cmi.knockoff = apply(df.knockoff, 3, \(x){KNN.CMI(cbind(cause = x[,1], effect = df.effect, df.condition), 'cause', 'effect', k)})
+  cmi.knockoff = apply(df.knockoff, 3, \(x){KNN.CMI(cbind(cause = x[,1], effect = df.effect, df.condition), "cause", "effect", k)})
 
   cmi.knockoff = round(cmi.knockoff, digits = 8)
   cmi0.knockoff = round(cmi0.knockoff, digits = 8)
