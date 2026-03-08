@@ -21,7 +21,7 @@ KOCMI.net = \(expr, k=3, M, tf=colnames(expr), pcc = 0){
 transMatrix = \(expr){
   tf = colnames(expr)
   n = length(tf)
-  re = matrix(0, n*(n-1), 4, dimnames = list(c(), c('regulator', 'target', 'cs', 'pvalue')))
+  re = matrix(0, n*(n-1), 4, dimnames = list(c(), c("regulator", "target", "cs", "pvalue")))
   re = as.data.frame(re)
   re$regulator = rep(tf, each = (n-1))
   target = c()
