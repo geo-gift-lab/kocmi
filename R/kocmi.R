@@ -97,8 +97,8 @@ KNN.CMI = \(data, cause = "x", effect = "y", k = 3){
     n_z = c(n_z, length(which(D_z[i,] < epsilon)))
   }
 
-  c = digamma(k) - mean(digamma(n_xz)) - mean(digamma(n_yz)) + mean(digamma(n_z))
-  return(c)
+  cres = digamma(k) - mean(digamma(n_xz)) - mean(digamma(n_yz)) + mean(digamma(n_z))
+  return(cres)
 }
 
 permutation_test_mean = \(x, n_perm = 10000) {
