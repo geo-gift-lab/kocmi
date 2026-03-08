@@ -18,17 +18,17 @@ KOCMI.net = \(expr, k=3, M, tf=colnames(expr), pcc = 0){
   return(weightNet)
 }
 
-transMatrix = function(expr){
-  tf <- colnames(expr)
-  n <- length(tf)
-  re <- matrix(0, n*(n-1), 4, dimnames = list(c(), c('regulator', 'target', 'cs', 'pvalue')))
-  re <- as.data.frame(re)
-  re$regulator <- rep(tf, each = (n-1))
-  target <- c()
-  for(i in 1:n){
-    target <- c(target, tf[-i])
+transMatrix = \(expr){
+  tf = colnames(expr)
+  n = length(tf)
+  re = matrix(0, n*(n-1), 4, dimnames = list(c(), c('regulator', 'target', 'cs', 'pvalue')))
+  re = as.data.frame(re)
+  re$regulator = rep(tf, each = (n-1))
+  target = c()
+  for(i in seq_len(n)){
+    target = c(target, tf[-i])
   }
-  re$target <- target
+  re$target = target
   return(re)
 }
 
