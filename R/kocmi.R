@@ -32,7 +32,7 @@ transMatrix = \(expr){
   return(re)
 }
 
-KOCMI = \(data, cause, effect, k=3, M, df.ko0 = NULL, sigma = NULL, pcc = NULL, seed = 42){
+KOCMI = \(data, cause, effect, k=3, M = 50, df.ko0 = NULL, sigma = NULL, pcc = NULL, seed = 42){
   if(!is.null(pcc) & !is.null(sigma)){
     sigma = sigma[, colnames(sigma) != effect]
     pccnode = names(which(abs(sigma[cause,]) >= pcc))
