@@ -285,3 +285,35 @@ is_posdef = \(A, tol=1e-9) {
   }
   return (lambda_min>tol*10)
 }
+
+x_knockoff  = \(x, M = 50, seed = 42){
+  set.seed(seed)
+
+  cor.G = stats::cor(x)
+  n.sample = nrow(x)
+  n.G = ncol(x)
+  x.knockoff = array(NA, dim = c(n.sample, n.G, M),
+                     dimnames = list(rownames(x), colnames(x), 1:M))
+
+  knockoff = GhostKnockoff.prelim(cor.G, M = M, method = "asdp")
+  P.each = knockoff$P.each
+  V.left = as.matrix(knockoff$V.left)
+  permute.index = knockoff$permute.index
+  permute.V.index = rep(permute.index, M)
+
+  Normal_50Studies = as.matrix(V.left %*% matrix(stats::rnorm(ncol(V.left) * n.sample), ncol(V.left), n.sample))  # 50 -> sample size
+  Normal_50Studies[permute.V.index == 1, ] = matrix(stats::rnorm(sum(permute.index) *
+                                                                 M * n.sample), sum(permute.index) * M, n.sample)
+
+
+  for(i in 1:n.sample){
+    Normal_k = matrix(Normal_50Studies[, i], nrow = n.G)
+
+    x_ik = as.vector(P.each %*% t(x[i, , drop = F])) + Normal_k
+
+    for(j in 1:M){
+      x.knockoff[i,,j] <- x_ik[,j]
+    }
+  }
+  return(x.knockoff)
+}
