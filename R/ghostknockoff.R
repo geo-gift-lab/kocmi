@@ -306,7 +306,7 @@ x_knockoff  = \(x, M = 50, seed = 42){
                                                                  M * n.sample), sum(permute.index) * M, n.sample)
 
 
-  for(i in 1:n.sample){
+  for (i in seq_len(n.sample)) {
     Normal_k = matrix(Normal_50Studies[, i], nrow = n.G)
 
     x_ik = as.vector(P.each %*% t(x[i, , drop = F])) + Normal_k
@@ -315,5 +315,6 @@ x_knockoff  = \(x, M = 50, seed = 42){
       x.knockoff[i,,j] <- x_ik[,j]
     }
   }
+
   return(x.knockoff)
 }
