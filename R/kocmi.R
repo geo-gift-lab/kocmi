@@ -37,7 +37,7 @@ KOCMI = \(data, cause, effect, k=3, M, df.ko0 = NULL, sigma = NULL, pcc = NULL, 
     sigma = sigma[, colnames(sigma) != effect]
     pccnode = names(which(abs(sigma[cause,]) >= pcc))
     pccnode = c(pccnode, effect)
-    if(length(pccnode) <= 2){
+    if (length(pccnode) <= 2) {
       pccnode = names(sort(abs(sigma[cause,]), decreasing = T)[1:2])
       pccnode = c(pccnode, effect)
     }
@@ -118,11 +118,6 @@ permutation_test_mean = \(x, n_perm = 10000) {
     p_value = p_value
   ))
 }
-
-
-
-
-
 
 # set.seed(10824)
 # beta <- 0.01
