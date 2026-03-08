@@ -67,8 +67,8 @@ KOCMI = \(data, cause, effect, k=3, M, df.ko0 = NULL, sigma = NULL, pcc = NULL, 
 
   D = cmi0.knockoff-cmi.knockoff
   p = permutation_test_mean(D)$p_value
-  t1 = mean(D) / sd(D)
-  #t3 = mean(cmi0-cmi.knockoff)/sd(cmi0-cmi.knockoff)
+  t1 = mean(D) / stats::sd(D)
+  #t3 = mean(cmi0-cmi.knockoff) / stats::sd(cmi0-cmi.knockoff)
   #t2 = (mean(cmi0.knockoff) - mean(cmi.knockoff)) / sqrt(var(cmi0.knockoff)/M + var(cmi0.knockoff)/M)
 
   return(list(pvalue = p,t1 = t1,cmi0 = cmi0,
