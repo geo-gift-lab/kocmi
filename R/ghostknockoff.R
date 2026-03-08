@@ -176,9 +176,8 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   # Maximize the shrinkage factor
   if(verbose) cat(sprintf("Combinining the solutions of the %s smaller SDPs ... ", n.blocks))
   tol = 1e-9
-  maxitr=1000
+  maxitr = 1000
   gamma_range = c(seq(0,0.1,len=11)[-11],seq(0.1,1,len=10)) # change from 100 to 20 to make it accurate near 0 and scalable.
-  #options(warn=-1)
   gamma_opt = gtools::binsearch( \(i) {
     G = (M+1)/M*Sigma - gamma_range[i]*diag(s_asdp)
     lambda_min = suppressWarnings({RSpectra::eigs(G, 1, which = "SR",
