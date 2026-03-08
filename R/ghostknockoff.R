@@ -308,10 +308,8 @@ x_knockoff  = \(x, M = 50, seed = 42){
 
   for (i in seq_len(n.sample)) {
     Normal_k = matrix(Normal_50Studies[, i], nrow = n.G)
-
     x_ik = as.vector(P.each %*% t(x[i, , drop = F])) + Normal_k
-
-    for(j in 1:M){
+    for (j in seq_len(M)) {
       x.knockoff[i,,j] <- x_ik[,j]
     }
   }
