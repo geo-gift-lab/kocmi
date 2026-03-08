@@ -157,7 +157,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   if(verbose) cat(sprintf("Solving %s smaller SDPs ... \n", n.blocks))
   s_asdp_list = list()
   if(verbose) pb = utils::txtProgressBar(min = 0, max = n.blocks, style = 3)
-  for(k in 1:n.blocks) {
+  for (k in seq_len(n.blocks)) {
     s_asdp_list[[k]] = create.solve_sdp_M(as.matrix(cluster_sol$subSigma[[k]]), M=M, gaptol=gaptol, maxit=maxit)
     if(verbose) utils::setTxtProgressBar(pb, k)
   }
