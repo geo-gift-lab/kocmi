@@ -118,12 +118,3 @@ permutation_test_mean = \(x, n_perm = 10000) {
     p_value = p_value
   ))
 }
-
-# set.seed(10824)
-# beta <- 0.01
-# z <- rnorm(100)
-# x <- sin(z) + beta * rnorm(100)
-# y <- sin(x) + exp(z) + beta * rnorm(100)
-# data <- cbind(x, y, z)
-#
-# KOCMI.net(data, k = 3, M = 40)
