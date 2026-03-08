@@ -201,8 +201,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   }
   if(verbose) cat("done. \n")
 
-  # Return result
-  s_asdp_scaled
+  return(s_asdp_scaled)
 }
 
 divide.sdp = \(Sigma, max.size) {
