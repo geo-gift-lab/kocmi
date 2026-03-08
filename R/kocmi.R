@@ -6,7 +6,7 @@ KOCMI.net = \(expr, k=3, M, tf=colnames(expr), pcc = 0){
     df.ko0 = x_knockoff(expr,M)
     a = apply(weightNet,1,function(x){KOCMI(expr,x[1],x[2],k,M,df.ko0)})
   } else {
-    sigma = cor(expr)
+    sigma = stats::cor(expr)
     a = apply(weightNet,1,function(x){KOCMI(expr,x[1],x[2],k,M,sigma=sigma,pcc=pcc)})
   }
   p.value = lapply(a,\(x) x$pvalue)
