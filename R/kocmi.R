@@ -14,10 +14,9 @@
 #'
 #' @examples
 #' set.seed(42)
-#' beta = 0.01
 #' z = stats::rnorm(100)
-#' x = sin(z) + beta * stats::rnorm(100)
-#' y = sin(x) + exp(z) + beta * stats::rnorm(100)
+#' x = sin(z) + 0.01 * stats::rnorm(100)
+#' y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 #' data = cbind(x, y, z)
 #' kocmi::kocmi_single(data, 1, 2, 3)
 #'
@@ -27,11 +26,11 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
   type = match.arg(type)
   mat = infoxtr:::.convert2mat(data, type)
 
-  knockoff = construct_knockoff(mat, regulator, conds, monte, seed)
+  knockoff = construct_ghostknockoff(mat, regulator, conds, monte, seed)
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = construct_knockoff(mat, regulator, c(target,conds), monte, seed)
+    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte, seed)
   }
 
   return(infoxtr:::RcppKOCMI(
@@ -50,10 +49,9 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 #'
 #' @examples
 #' set.seed(42)
-#' beta = 0.01
 #' z = stats::rnorm(100)
-#' x = sin(z) + beta * stats::rnorm(100)
-#' y = sin(x) + exp(z) + beta * stats::rnorm(100)
+#' x = sin(z) + 0.01 * stats::rnorm(100)
+#' y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 #' data = cbind(x, y, z)
 #' kocmi::kocmi_net(data, 1:3)
 #'
@@ -65,7 +63,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = x_knockoff(mat, monte, seed)
+    null_knockoff = kocmi::x_knockoff(mat, monte, seed)
   }
 
   new_vars = seq_along(vars)
@@ -75,12 +73,13 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   tv = vector("double", length(var_pairs)*2)
   pv = vector("double", length(var_pairs)*2)
   if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
+
   for (i in seq_along(var_pairs)) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    vp_knockoff = construct_knockoff(mat, vp[1], conds, monte, seed)
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[1]])
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff, type,
@@ -88,7 +87,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     tvi[i] = vars[vp[2]]; rvi[i] = vars[vp[1]]
     tv[i] = cs12[1]; pv[i] = cs12[2]
 
-    vp_knockoff = construct_knockoff(mat, vp[2], conds, monte, seed)
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[2], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
     cs21 = infoxtr:::RcppKOCMI(
       mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff, type,
