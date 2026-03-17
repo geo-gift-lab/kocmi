@@ -22,11 +22,9 @@
 #' x = sin(z) + 0.01 * stats::rnorm(100)
 #' y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 #' data = cbind(x, y, z)
-#' kocmi::x_knockoff(data)
+#' kocmi::x_ghostknockoff(data)
 #'
-x_knockoff = \(x, monte = 50, seed = 42) {
-  set.seed(seed)
-
+x_ghostknockoff = \(x, monte = 50) {
   cor.G = stats::cor(x)
   n.sample = nrow(x)
   n.G = ncol(x)
@@ -61,7 +59,6 @@ x_knockoff = \(x, monte = 50, seed = 42) {
 #'   and columns correspond to variables.
 #' @param monte (optional) Number of Monte Carlo knockoff samples to generate.
 #'   Default is 50.
-#' @param seed (optional) Random seed for reproducibility of knockoff generation.
 #'
 #' @details
 #' The function applies ghost knockoff construction to the joint set of
@@ -77,9 +74,11 @@ x_knockoff = \(x, monte = 50, seed = 42) {
 #' x = sin(z) + 0.01 * stats::rnorm(100)
 #' y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 #' data = cbind(x, y, z)
-#' kocmi::construct_ghostknockoff(data, 1, 1:3)
+#' kocmi::construct_ghostknockoff(data, 1, 2:3)
 #'
-construct_ghostknockoff = \(x, target, agent, monte = 50, seed = 42) {
-  k.array = x_knockoff(x[,c(target,agent),drop = FALSE], monte, seed)
-  return(apply(k.array, 3, \(.x) .x[,1]))
+construct_ghostknockoff = \(x, target, agent, monte = 50) {
+  agent = sort(unique(agent))
+  if(target %in% agent) stop("`target` and `agent` must be disjoint.")
+  k.array = x_ghostknockoff(x[,c(target,agent),drop = FALSE], monte)
+  return(k.array[,1,])
 }

@@ -15,8 +15,7 @@ kocmi_net(
   seed = 42,
   base = exp(1),
   method = "equal",
-  contain_null = TRUE,
-  verbose = FALSE
+  contain_null = TRUE
 )
 }
 \arguments{
@@ -52,8 +51,6 @@ computed using knockoffs generated under the null model. In this case
 the difference is defined as \eqn{I(Y; X_{null} | Z) - I(Y; X_{knockoff} | Z)}.
 If \code{FALSE}, the original conditional mutual information \eqn{I(Y; X | Z)} is
 used instead and compared against the knockoff estimates \eqn{I(Y; X_{knockoff} | Z)}.}
-
-\item{verbose}{(optional) Whether to print progress bar.}
 }
 \value{
 A dataframe.
@@ -63,10 +60,9 @@ Knockoff Conditional Mutual Information Test for Selected Variables
 }
 \examples{
 set.seed(42)
-beta = 0.01
 z = stats::rnorm(100)
-x = sin(z) + beta * stats::rnorm(100)
-y = sin(x) + exp(z) + beta * stats::rnorm(100)
+x = sin(z) + 0.01 * stats::rnorm(100)
+y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 data = cbind(x, y, z)
 kocmi::kocmi_net(data, 1:3)
 

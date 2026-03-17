@@ -24,13 +24,13 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
                  monte = 40, nboots = 1e4, k = 3, threads = 1, seed = 42,
                  base = exp(1), method = "equal", contain_null = TRUE) {
   type = match.arg(type)
-  mat = infoxtr:::.convert2mat(data, type)
+  mat = infoxtr:::.convert2mat(data, contain_type = FALSE)
 
-  knockoff = construct_ghostknockoff(mat, regulator, conds, monte, seed)
+  knockoff = construct_ghostknockoff(mat, regulator, conds, monte)
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte, seed)
+    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte)
   }
 
   return(infoxtr:::RcppKOCMI(
@@ -42,7 +42,6 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 #'
 #' @inheritParams kocmi_single
 #' @param vars Integer vector of column indices to include in kocmi calculation.
-#' @param verbose (optional) Whether to print progress bar.
 #'
 #' @returns A dataframe.
 #' @export
@@ -55,55 +54,59 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 #' data = cbind(x, y, z)
 #' kocmi::kocmi_net(data, 1:3)
 #'
-kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k = 3, threads = 1,
-              seed = 42, base = exp(1), method = "equal", contain_null = TRUE, verbose = FALSE) {
+kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k = 3,
+              threads = 1, seed = 42, base = exp(1), method = "equal", contain_null = TRUE) {
   type = match.arg(type)
   vars = sort(unique(vars))
-  mat = infoxtr:::.convert2mat(data, type)[,vars,drop = FALSE]
+  mat = infoxtr:::.convert2mat(data, contain_type = FALSE)[,vars,drop = FALSE]
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = kocmi::x_knockoff(mat, monte, seed)
+    null_knockoff = kocmi::x_ghostknockoff(mat, monte)
+  }
+
+  doclust = FALSE
+  if (threads > 1) {
+    doclust = TRUE
+    cl = parallel::makeCluster(threads)
+    on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
   new_vars = seq_along(vars)
   var_pairs = utils::combn(new_vars, 2, simplify = FALSE)
-  tvi = vector("integer", length(var_pairs)*2)
-  rvi = vector("integer", length(var_pairs)*2)
-  tv = vector("double", length(var_pairs)*2)
-  pv = vector("double", length(var_pairs)*2)
-  if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
+  var_pairs = c(var_pairs, lapply(var_pairs, rev))
 
-  for (i in seq_along(var_pairs)) {
+  run_single_pair = \(i) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
-    if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[1]])
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte)
+    if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
     cs12 = infoxtr:::RcppKOCMI(
-      mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff, type,
-      nboots, k, 0, threads, seed, base, method, contain_null)
-    tvi[i] = vars[vp[2]]; rvi[i] = vars[vp[1]]
-    tv[i] = cs12[1]; pv[i] = cs12[2]
+      mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff,
+      type, nboots, k, 0, 1, seed, base, method, contain_null)
 
-    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[2], conds, monte, seed)
-    if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
-    cs21 = infoxtr:::RcppKOCMI(
-      mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff, type,
-      nboots, k, 0, threads, seed, base, method, contain_null)
-    tvi[i + length(var_pairs)] = vars[vp[1]]
-    rvi[i + length(var_pairs)] = vars[vp[2]]
-    tv[i + length(var_pairs)] = cs21[1]
-    pv[i + length(var_pairs)] = cs21[2]
+    pair_res = data.frame(
+      regulator = vars[vp[1]],
+      target = vars[vp[2]],
+      t_stat = cs12[1],
+      p_value = cs12[2],
+      row.names = NULL
+    )
 
-    if (verbose) utils::setTxtProgressBar(txtpb, i)
+    return(pair_res)
   }
-  if (verbose) close(txtpb)
 
-  return(data.frame(
-    regulator = rvi, target = tvi,
-    cs = abs(tv), t_stat = tv, p_value = pv,
-    p_adj = stats::p.adjust(pv,method = "BH")
-  ))
+  if (doclust) {
+    res = parallel::parLapply(cl, seq_along(var_pairs), run_single_pair)
+  } else {
+    res = lapply(seq_along(var_pairs), run_single_pair)
+  }
+
+  res = do.call(rbind, res)
+  res$cs = abs(res$t_stat)
+  res$p_adj = stats::p.adjust(res$p_value,method = "BH")
+
+  return(res)
 }

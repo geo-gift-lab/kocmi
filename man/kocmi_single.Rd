@@ -66,10 +66,9 @@ Knockoff Conditional Mutual Information Test for Single Variable Pair
 }
 \examples{
 set.seed(42)
-beta = 0.01
 z = stats::rnorm(100)
-x = sin(z) + beta * stats::rnorm(100)
-y = sin(x) + exp(z) + beta * stats::rnorm(100)
+x = sin(z) + 0.01 * stats::rnorm(100)
+y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 data = cbind(x, y, z)
 kocmi::kocmi_single(data, 1, 2, 3)
 
