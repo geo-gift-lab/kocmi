@@ -26,12 +26,12 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
   type = match.arg(type)
   mat = infoxtr:::.convert2mat(data, contain_type = FALSE)
 
-  knockoff = construct_ghostknockoff(mat, regulator, conds, monte)
-
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte)
+    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte, seed)
   }
+
+  knockoff = construct_ghostknockoff(mat, regulator, conds, monte, seed)
 
   return(infoxtr:::RcppKOCMI(
             mat, target, regulator, conds, knockoff, null_knockoff, type,
@@ -62,13 +62,14 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = kocmi::x_ghostknockoff(mat, monte)
+    null_knockoff = kocmi::x_ghostknockoff(mat, monte, seed)
   }
 
   doclust = FALSE
   if (threads > 1) {
     doclust = TRUE
     cl = parallel::makeCluster(threads)
+    # parallel::clusterSetRNGStream(cl, seed)
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
@@ -81,8 +82,13 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte)
     if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
+    # if (contain_null) {
+    #   vp_null_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], c(vp[2],conds), monte, seed)
+    # }
+
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
+
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff,
       type, nboots, k, 0, 1, seed, base, method, contain_null)

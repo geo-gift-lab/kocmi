@@ -4,7 +4,7 @@
 \alias{x_ghostknockoff}
 \title{Generate Ghost Knockoff Samples}
 \usage{
-x_ghostknockoff(x, monte = 50)
+x_ghostknockoff(x, monte = 50, seed = NULL)
 }
 \arguments{
 \item{x}{A numeric matrix of observations. Rows correspond to samples
@@ -12,6 +12,8 @@ and columns correspond to variables.}
 
 \item{monte}{(optional) Number of Monte Carlo knockoff samples to generate.
 Default is 50.}
+
+\item{seed}{(optional) Random seed for reproducibility of knockoff generation.}
 }
 \value{
 A numeric array of dimension
