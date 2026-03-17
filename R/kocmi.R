@@ -79,6 +79,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
 
+    vp_null_knockoff = NULL
     vp_knockoff = construct_knockoff(mat, vp[1], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[1]])
     cs12 = infoxtr:::RcppKOCMI(
