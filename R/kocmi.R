@@ -32,6 +32,49 @@ transMatrix = \(expr){
   return(re)
 }
 
+KNN.CMI = \(data, cause = "x", effect = "y", k = 3){
+  condition = setdiff(colnames(data), c(cause, effect))
+  df_xz = data[,c(cause, condition)]
+  df_yz = data[,c(effect, condition)]
+  df_z = as.matrix(data[,condition])
+
+  D_all = as.matrix(stats::dist(data, method = 'maximum'))
+  D_z = as.matrix(stats::dist(df_z, method = 'maximum'))
+  D_xz = as.matrix(stats::dist(df_xz, method = 'maximum'))
+  D_yz = as.matrix(stats::dist(df_yz, method = 'maximum'))
+
+  N = nrow(data)
+  n_xz = c(); n_yz = c(); n_z = c()
+
+  for(i in seq_len(N)){
+    epsilon = sort(D_all[i,])[k+1]
+    n_xz = c(n_xz, length(which(D_xz[i,] < epsilon)))
+    n_yz = c(n_yz, length(which(D_yz[i,] < epsilon)))
+    n_z = c(n_z, length(which(D_z[i,] < epsilon)))
+  }
+
+  cres = digamma(k) - mean(digamma(n_xz)) - mean(digamma(n_yz)) + mean(digamma(n_z))
+  return(cres)
+}
+
+permutation_test_mean = \(x, n_perm = 10000) {
+  observed_stat = abs(mean(x))
+  permuted_stats = numeric(n_perm)
+
+  for (i in seq_len(n_perm)) {
+    signs = sample(c(-1, 1), size = length(x), replace = TRUE)
+    permuted_x = x * signs
+    permuted_stats[i] = abs(mean(permuted_x))
+  }
+
+  p_value = mean(permuted_stats >= observed_stat)
+
+  return(list(
+    observed_statistic = observed_stat,
+    p_value = p_value
+  ))
+}
+
 KOCMI = \(data, cause, effect, k=3, M = 50, df.ko0 = NULL, sigma = NULL, pcc = NULL, seed = 42){
   if(!is.null(pcc) & !is.null(sigma)){
     sigma = sigma[, colnames(sigma) != effect]
@@ -76,45 +119,4 @@ KOCMI = \(data, cause, effect, k=3, M = 50, df.ko0 = NULL, sigma = NULL, pcc = N
               cmi.knockoff = cmi.knockoff))
 }
 
-KNN.CMI = \(data, cause = "x", effect = "y", k = 3){
-  condition = setdiff(colnames(data), c(cause, effect))
-  df_xz = data[,c(cause, condition)]
-  df_yz = data[,c(effect, condition)]
-  df_z = as.matrix(data[,condition])
 
-  D_all = as.matrix(stats::dist(data, method = 'maximum'))
-  D_z = as.matrix(stats::dist(df_z, method = 'maximum'))
-  D_xz = as.matrix(stats::dist(df_xz, method = 'maximum'))
-  D_yz = as.matrix(stats::dist(df_yz, method = 'maximum'))
-
-  N = nrow(data)
-  n_xz = c(); n_yz = c(); n_z = c()
-
-  for(i in seq_len(N)){
-    epsilon = sort(D_all[i,])[k+1]
-    n_xz = c(n_xz, length(which(D_xz[i,] < epsilon)))
-    n_yz = c(n_yz, length(which(D_yz[i,] < epsilon)))
-    n_z = c(n_z, length(which(D_z[i,] < epsilon)))
-  }
-
-  cres = digamma(k) - mean(digamma(n_xz)) - mean(digamma(n_yz)) + mean(digamma(n_z))
-  return(cres)
-}
-
-permutation_test_mean = \(x, n_perm = 10000) {
-  observed_stat = abs(mean(x))
-  permuted_stats = numeric(n_perm)
-
-  for (i in seq_len(n_perm)) {
-    signs = sample(c(-1, 1), size = length(x), replace = TRUE)
-    permuted_x = x * signs
-    permuted_stats[i] = abs(mean(permuted_x))
-  }
-
-  p_value = mean(permuted_stats >= observed_stat)
-
-  return(list(
-    observed_statistic = observed_stat,
-    p_value = p_value
-  ))
-}

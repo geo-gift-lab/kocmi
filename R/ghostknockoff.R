@@ -35,7 +35,7 @@ GhostKnockoff.prelim = \(cor.G, M=5, method="asdp", max.size=500){
         u = svd.fit$u
         svd.fit$d[is.na(svd.fit$d)] = 0
         cump = cumsum(svd.fit$d) / sum(svd.fit$d)
-        n.svd = which(cump>=0.999)[1]
+        n.svd = which(cump >= 0.999)[1]
         if(is.na(n.svd)) {
           n.svd = nrow(V)
         }
@@ -130,7 +130,7 @@ create.solve_sdp_M = \(Sigma, M=1, gaptol=1e-6, maxit=1000, verbose=FALSE) {
   }
   s = s*(1-s_eps)
   s[s<0] = 0
-  if(verbose) cat("done. \n")
+  if (verbose) cat("done. \n")
 
   # Verify that the solution is correct
   if (all(s==0)) {
@@ -145,36 +145,36 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   # Check that covariance matrix is symmetric
   stopifnot(Matrix::isSymmetric(Sigma))
 
-  if(ncol(Sigma) <= max.size) return(create.solve_sdp_M(Sigma, M=M, gaptol=gaptol, maxit=maxit, verbose=verbose))
+  if (ncol(Sigma) <= max.size) return(create.solve_sdp_M(Sigma, M=M, gaptol=gaptol, maxit=maxit, verbose=verbose))
 
   # Approximate the covariance matrix as block diagonal
-  if(verbose) cat(sprintf("Dividing the problem into subproblems of size <= %s ... ", max.size))
+  if (verbose) cat(sprintf("Dividing the problem into subproblems of size <= %s ... ", max.size))
   cluster_sol = divide.sdp(Sigma, max.size=max.size)
   n.blocks = max(cluster_sol$clusters)
-  if(verbose) cat("done. \n")
+  if (verbose) cat("done. \n")
 
   # Solve the smaller SDPs corresponding to each block
-  if(verbose) cat(sprintf("Solving %s smaller SDPs ... \n", n.blocks))
+  if (verbose) cat(sprintf("Solving %s smaller SDPs ... \n", n.blocks))
   s_asdp_list = list()
-  if(verbose) pb = utils::txtProgressBar(min = 0, max = n.blocks, style = 3)
+  if (verbose) pb = utils::txtProgressBar(min = 0, max = n.blocks, style = 3)
   for (k in seq_len(n.blocks)) {
     s_asdp_list[[k]] = create.solve_sdp_M(as.matrix(cluster_sol$subSigma[[k]]), M=M, gaptol=gaptol, maxit=maxit)
-    if(verbose) utils::setTxtProgressBar(pb, k)
+    if (verbose) utils::setTxtProgressBar(pb, k)
   }
-  if(verbose) cat("\n")
+  if (verbose) cat("\n")
 
   # Assemble the solutions into one vector of length p
   p = dim(Sigma)[1]
   idx_count = rep(1, n.blocks)
   s_asdp = rep(0,p)
-  for( j in 1:p ){
+  for ( j in 1:p ){
     cluster_j = cluster_sol$clusters[j]
     s_asdp[j] = s_asdp_list[[cluster_j]][idx_count[cluster_j]]
     idx_count[cluster_j] = idx_count[cluster_j]+1
   }
 
   # Maximize the shrinkage factor
-  if(verbose) cat(sprintf("Combinining the solutions of the %s smaller SDPs ... ", n.blocks))
+  if (verbose) cat(sprintf("Combinining the solutions of the %s smaller SDPs ... ", n.blocks))
   tol = 1e-9
   maxitr = 1000
   gamma_range = c(seq(0,0.1,len=11)[-11],seq(0.1,1,len=10)) # change from 100 to 20 to make it accurate near 0 and scalable.
@@ -284,7 +284,7 @@ is_posdef = \(A, tol=1e-9) {
   return (lambda_min>tol*10)
 }
 
-x_knockoff  = \(x, M = 50, seed = 42){
+x_knockoff  = \(x, M = 50, seed = 42) {
   set.seed(seed)
 
   cor.G = stats::cor(x)
@@ -308,7 +308,7 @@ x_knockoff  = \(x, M = 50, seed = 42){
     Normal_k = matrix(Normal_50Studies[, i], nrow = n.G)
     x_ik = as.vector(P.each %*% t(x[i, , drop = F])) + Normal_k
     for (j in seq_len(M)) {
-      x.knockoff[i,,j] <- x_ik[,j]
+      x.knockoff[i,,j] = x_ik[,j]
     }
   }
 
