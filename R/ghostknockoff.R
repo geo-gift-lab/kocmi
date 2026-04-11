@@ -314,3 +314,8 @@ x_knockoff  = \(x, M = 50, seed = 42) {
 
   return(x.knockoff)
 }
+
+construct_knockoff = \(data, target, agent, M = 50, seed = 42){
+  k.array = x_knockoff(data[,c(target,agent),drop = FALSE], M, seed)
+  return(apply(k.array, 3, \(.x) .x[,1]))
+}
