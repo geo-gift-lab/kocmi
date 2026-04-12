@@ -1,4 +1,4 @@
-KOCMI.net = \(expr, k=3, M, tf=colnames(expr), pcc = 0){
+KOCMI.net = \(expr, k=3, M=40, tf=colnames(expr), pcc = 0){
   expr = as.data.frame(expr)
   expr = expr[,tf]
   weightNet = transMatrix(expr)
