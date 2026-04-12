@@ -55,7 +55,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   }
 
   new_vars = seq_along(vars)
-  var_pairs = utils::combn(1:5, 2, simplify = FALSE)
+  var_pairs = utils::combn(new_vars, 2, simplify = FALSE)
   tvi = vector("integer", length(var_pairs)*2)
   rvi = vector("integer", length(var_pairs)*2)
   tv = vector("double", length(var_pairs)*2)
