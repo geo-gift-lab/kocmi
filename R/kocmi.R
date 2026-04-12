@@ -44,10 +44,11 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
               threads = 1, seed = 42, base = exp(1), method = "equal", contain_null = TRUE) {
   type = match.arg(type)
   mat = infoxtr:::.convert2mat(data[,vars,drop = FALSE], type)
+  new_vars = seq_along(vars)
   knockoff = construct_knockoff(mat, regulator, conds, monte, seed)
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = construct_knockoff(mat, regulator, c(target,conds), monte, seed)
+    null_knockoff = x_knockoff(mat, monte, seed)
   }
   return(infoxtr:::RcppKOCMI(
     mat, target, regulator, conds, knockoff, null_knockoff, type,
