@@ -83,10 +83,13 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     tvi[i] = vars[vp[1]]; rvi[i] = vars[vp[2]]
     tv[i] = cs21[1]; pv[i] = cs21[2]
 
-
-
+    if (verbose) utils::setTxtProgressBar(txtpb, i)
   }
-  return(infoxtr:::RcppKOCMI(
-    mat, target, regulator, conds, knockoff, null_knockoff, type,
-    nboots, k, 0, threads, seed, base, method, contain_null))
+  if (verbose) close(txtpb)
+
+  return(data.frame(
+    regulator = rvi, target = tvi,
+    cs = abs(tv), t_stat = tv, p_value = pv,
+    p_adj = stats::p.adjust(pv,method = "BH")
+  ))
 }
