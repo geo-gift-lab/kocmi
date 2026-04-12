@@ -1,4 +1,8 @@
-#' Title
+#' Knockoff Conditional Mutual Information Test for Single Variable Pair
+#'
+#' Tests the statistical significance of conditional mutual information between
+#' a single regulator (agent) variable and a target variable, controlling for
+#' conditioning variables using knockoff-based virtual intervention.
 #'
 #' @inheritParams infoxtr::kocmi
 #' @param regulator Integer vector of column indices for the regulator variable.
