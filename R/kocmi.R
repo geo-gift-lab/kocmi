@@ -70,18 +70,18 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff, type,
       nboots, k, 0, threads, seed, base, method, contain_null)
-    tvi[i + length(var_pairs)] = vars[vp[2]]
-    rvi[i + length(var_pairs)] = vars[vp[1]]
-    tv[i + length(var_pairs)] = cs12[1]
-    pv[i + length(var_pairs)] = cs12[2]
+    tvi[i] = vars[vp[2]]; rvi[i] = vars[vp[1]]
+    tv[i] = cs12[1]; pv[i] = cs12[2]
 
     vp_knockoff = construct_knockoff(mat, vp[2], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
     cs21 = infoxtr:::RcppKOCMI(
       mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff, type,
       nboots, k, 0, threads, seed, base, method, contain_null)
-    tvi[i] = vars[vp[1]]; rvi[i] = vars[vp[2]]
-    tv[i] = cs21[1]; pv[i] = cs21[2]
+    tvi[i + length(var_pairs)] = vars[vp[1]]
+    rvi[i + length(var_pairs)] = vars[vp[2]]
+    tv[i + length(var_pairs)] = cs21[1]
+    pv[i + length(var_pairs)] = cs21[2]
 
     if (verbose) utils::setTxtProgressBar(txtpb, i)
   }
