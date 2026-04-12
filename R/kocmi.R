@@ -47,18 +47,32 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
               seed = 42, base = exp(1), method = "equal", contain_null = TRUE, verbose = FALSE) {
   type = match.arg(type)
   mat = infoxtr:::.convert2mat(data[,vars,drop = FALSE], type)
-  new_vars = seq_along(vars)
 
   null_knockoff = NULL
   if (contain_null) {
     null_knockoff = x_knockoff(mat, monte, seed)
   }
 
+  new_vars = seq_along(vars)
   var_pairs = utils::combn(1:5, 2, simplify = FALSE)
+  var1 = vector("integer", length(var_pairs)*2)
+  var2 = vector("integer", length(var_pairs)*2)
+  tv = vector("double", length(var_pairs)*2)
+  pv = vector("double", length(var_pairs)*2)
   if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
-  for (vp in var_pairs) {
+  for (i in seq_along(var_pairs)) {
+    vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
-    knockoff = construct_knockoff(mat, vp[1], conds, monte, seed)
+    vp_knockoff = construct_knockoff(mat, vp[1], conds, monte, seed)
+    if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[1]])
+    cs12 = infoxtr:::RcppKOCMI(
+      mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff, type,
+      nboots, k, 0, threads, seed, base, method, contain_null)
+    vp_knockoff = construct_knockoff(mat, vp[2], conds, monte, seed)
+    if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
+    cs21 = infoxtr:::RcppKOCMI(
+      mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff, type,
+      nboots, k, 0, threads, seed, base, method, contain_null)
 
   }
   return(infoxtr:::RcppKOCMI(
