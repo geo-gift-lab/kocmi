@@ -56,8 +56,9 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   var_pairs = utils::combn(1:5, 2, simplify = FALSE)
   if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
-  for (v in var_pairs) {
-    knockoff = construct_knockoff(mat, regulator, conds, monte, seed)
+  for (vp in var_pairs) {
+    conds = setdiff(new_vars, vp)
+    knockoff = construct_knockoff(mat, vp[1], conds, monte, seed)
 
   }
   return(infoxtr:::RcppKOCMI(
