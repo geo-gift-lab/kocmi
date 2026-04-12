@@ -13,6 +13,14 @@
 #' @export
 #'
 #' @examples
+#' set.seed(42)
+#' beta = 0.01
+#' z = stats::rnorm(100)
+#' x = sin(z) + beta * stats::rnorm(100)
+#' y = sin(x) + exp(z) + beta * stats::rnorm(100)
+#' data = cbind(x, y, z)
+#' kocmi::kocmi_single(data, 1, 2, 3)
+#'
 kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
                  monte = 40, nboots = 1e4, k = 3, threads = 1, seed = 42,
                  base = exp(1), method = "equal", contain_null = TRUE) {
