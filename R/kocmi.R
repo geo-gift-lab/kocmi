@@ -1,7 +1,7 @@
 #' Title
 #'
-#' @inheritParams nfoxtr::kocmi
-#' @param regulator
+#' @inheritParams infoxtr::kocmi
+#' @param regulator Integer vector of column indices for the regulator variable.
 #' @param monte
 #' @param contain_null (optional) Logical. If `TRUE`, the test statistic is
 #'   computed using knockoffs generated under the null model. In this case
