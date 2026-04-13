@@ -43,6 +43,7 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 #'
 #' @inheritParams kocmi_single
 #' @param vars Integer vector of column indices to include in kocmi calculation.
+#' @param verbose (optional) Whether to print progress bar.
 #'
 #' @returns A dataframe.
 #' @export
