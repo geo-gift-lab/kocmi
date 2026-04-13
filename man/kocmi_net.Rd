@@ -52,6 +52,8 @@ computed using knockoffs generated under the null model. In this case
 the difference is defined as \eqn{I(Y; X_{null} | Z) - I(Y; X_{knockoff} | Z)}.
 If \code{FALSE}, the original conditional mutual information \eqn{I(Y; X | Z)} is
 used instead and compared against the knockoff estimates \eqn{I(Y; X_{knockoff} | Z)}.}
+
+\item{verbose}{(optional) Whether to print progress bar.}
 }
 \value{
 A dataframe.
