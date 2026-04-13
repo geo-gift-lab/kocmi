@@ -26,11 +26,11 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
   type = match.arg(type)
   mat = infoxtr:::.convert2mat(data, type)
 
-  knockoff = construct_knockoff(mat, regulator, conds, monte, seed)
+  knockoff = construct_ghostknockoff(mat, regulator, conds, monte, seed)
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = construct_knockoff(mat, regulator, c(target,conds), monte, seed)
+    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte, seed)
   }
 
   return(infoxtr:::RcppKOCMI(
@@ -78,7 +78,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    vp_knockoff = construct_knockoff(mat, vp[1], conds, monte, seed)
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[1]])
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff, type,
@@ -86,7 +86,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     tvi[i] = vars[vp[2]]; rvi[i] = vars[vp[1]]
     tv[i] = cs12[1]; pv[i] = cs12[2]
 
-    vp_knockoff = construct_knockoff(mat, vp[2], conds, monte, seed)
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[2], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
     cs21 = infoxtr:::RcppKOCMI(
       mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff, type,

@@ -44,9 +44,9 @@ x_knockoff  = \(x, monte = 50, seed = 42) {
 #' x = sin(z) + 0.01 * stats::rnorm(100)
 #' y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 #' data = cbind(x, y, z)
-#' kocmi::construct_knockoff(data, 1, 1:3)
+#' kocmi::construct_ghostknockoff(data, 1, 1:3)
 #'
-construct_knockoff = \(data, target, agent, monte = 50, seed = 42){
+construct_ghostknockoff = \(data, target, agent, monte = 50, seed = 42) {
   k.array = x_knockoff(data[,c(target,agent),drop = FALSE], monte, seed)
   return(apply(k.array, 3, \(.x) .x[,1]))
 }
