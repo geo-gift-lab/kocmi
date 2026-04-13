@@ -315,6 +315,17 @@ x_knockoff  = \(x, M = 50, seed = 42) {
   return(x.knockoff)
 }
 
+#' Title
+#'
+#' @inheritParams infoxtr::surd
+#' @param data
+#' @param monte
+#' @param seed (optional) Random seed used for Monte Carlo knockoff sample generation.
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 construct_knockoff = \(data, target, agent, monte = 50, seed = 42){
   k.array = x_knockoff(data[,c(target,agent),drop = FALSE], monte, seed)
   return(apply(k.array, 3, \(.x) .x[,1]))
