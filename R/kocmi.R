@@ -81,7 +81,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
-  for (i in seq_along(var_pairs)) {
+  run_single_node = \(i, progressbar = FALSE) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
 
@@ -104,8 +104,10 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     tv[i + length(var_pairs)] = cs21[1]
     pv[i + length(var_pairs)] = cs21[2]
 
-    if (verbose) utils::setTxtProgressBar(txtpb, i)
+    if (progressbar) utils::setTxtProgressBar(txtpb, i)
   }
+
+  for (i in seq_along(var_pairs)) run_single_node(i, verbose)
   if (verbose) close(txtpb)
 
   return(data.frame(
