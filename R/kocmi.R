@@ -63,7 +63,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = x_knockoff(mat, monte, seed)
+    null_knockoff = kocmi::x_knockoff(mat, monte, seed)
   }
 
   new_vars = seq_along(vars)
@@ -73,6 +73,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   tv = vector("double", length(var_pairs)*2)
   pv = vector("double", length(var_pairs)*2)
   if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
+
   for (i in seq_along(var_pairs)) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
