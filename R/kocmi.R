@@ -74,6 +74,13 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   pv = vector("double", length(var_pairs)*2)
   if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
 
+  doclust = FALSE
+  if (threads > 1) {
+    doclust = TRUE
+    cl = parallel::makeCluster(threads)
+    on.exit(parallel::stopCluster(cl), add = TRUE)
+  }
+
   for (i in seq_along(var_pairs)) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
