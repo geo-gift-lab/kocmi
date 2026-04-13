@@ -1,15 +1,6 @@
 #' Generate Ghost Knockoff Samples
 #'
-#' Construct multiple knockoff copies for input variables using the
-#' Ghost Knockoff framework. The method preserves the correlation
-#' structure of the original variables while generating exchangeable
-#' knockoff counterparts for Monte Carlo inference.
-#'
-#' @param x A numeric matrix of observations. Rows correspond to samples
-#'   and columns correspond to variables.
-#' @param monte (optional) Number of Monte Carlo knockoff samples to generate.
-#'   Default is 50.
-#' @param seed (optional) Random seed for reproducibility of knockoff generation.
+#' @inheritParams construct_ghostknockoff
 #'
 #' @details
 #' The function first estimates the empirical correlation matrix of the input
@@ -23,10 +14,6 @@
 #'
 #' @returns A numeric array of dimension
 #'   `(n_samples, n_variables, monte)` containing knockoff samples.
-#'
-#' @inheritParams construct_ghostknockoff
-#'
-#' @returns An array.
 #' @export
 #'
 #' @examples
