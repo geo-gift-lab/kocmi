@@ -42,7 +42,6 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 #'
 #' @inheritParams kocmi_single
 #' @param vars Integer vector of column indices to include in kocmi calculation.
-#' @param verbose (optional) Whether to print progress bar.
 #'
 #' @returns A dataframe.
 #' @export
@@ -55,8 +54,8 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 #' data = cbind(x, y, z)
 #' kocmi::kocmi_net(data, 1:3)
 #'
-kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k = 3, threads = 1,
-              seed = 42, base = exp(1), method = "equal", contain_null = TRUE, verbose = FALSE) {
+kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k = 3,
+              threads = 1, seed = 42, base = exp(1), method = "equal", contain_null = TRUE) {
   type = match.arg(type)
   vars = sort(unique(vars))
   mat = infoxtr:::.convert2mat(data, type)[,vars,drop = FALSE]
@@ -72,7 +71,6 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   rvi = vector("integer", length(var_pairs)*2)
   tv = vector("double", length(var_pairs)*2)
   pv = vector("double", length(var_pairs)*2)
-  if (verbose) txtpb = utils::txtProgressBar(min = 1, max = length(var_pairs))
 
   doclust = FALSE
   if (threads > 1) {
@@ -81,7 +79,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
-  run_single_node = \(i, progressbar = FALSE) {
+  run_single_node = \(i) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
 
@@ -104,11 +102,14 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     tv[i + length(var_pairs)] = cs21[1]
     pv[i + length(var_pairs)] = cs21[2]
 
-    if (progressbar) utils::setTxtProgressBar(txtpb, i)
+    return(i) # Just return as a marker of finishing
   }
 
-  for (i in seq_along(var_pairs)) run_single_node(i, verbose)
-  if (verbose) close(txtpb)
+  if (doclust) {
+    out_res = parallel::parLapply(cl, seq_along(var_pairs), run_single_node)
+  } else {
+    for (i in seq_along(var_pairs)) run_single_node(i)
+  }
 
   return(data.frame(
     regulator = rvi, target = tvi,
