@@ -64,7 +64,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
               seed = 42, base = exp(1), method = "equal", contain_null = TRUE, verbose = FALSE) {
   type = match.arg(type)
   vars = sort(unique(vars))
-  mat = infoxtr:::.convert2mat(data[,vars,drop = FALSE], type)
+  mat = infoxtr:::.convert2mat(data, type)[,vars,drop = FALSE]
 
   null_knockoff = NULL
   if (contain_null) {
