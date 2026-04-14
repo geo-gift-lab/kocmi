@@ -4,7 +4,7 @@
 \alias{construct_ghostknockoff}
 \title{Construct Target-wise Ghost Knockoff Samples}
 \usage{
-construct_ghostknockoff(x, target, agent, monte = 50, seed = 42)
+construct_ghostknockoff(x, target, agent, monte = 50)
 }
 \arguments{
 \item{x}{A numeric matrix of observations. Rows correspond to samples
@@ -16,8 +16,6 @@ and columns correspond to variables.}
 
 \item{monte}{(optional) Number of Monte Carlo knockoff samples to generate.
 Default is 50.}
-
-\item{seed}{(optional) Random seed for reproducibility of knockoff generation.}
 }
 \value{
 A numeric matrix.
