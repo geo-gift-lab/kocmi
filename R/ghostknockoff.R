@@ -24,8 +24,8 @@
 #' data = cbind(x, y, z)
 #' kocmi::x_ghostknockoff(data)
 #'
-x_ghostknockoff = \(x, monte = 50, seed = 42) {
-  set.seed(seed)
+x_ghostknockoff = \(x, monte = 50, seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
 
   cor.G = stats::cor(x)
   n.sample = nrow(x)
@@ -79,7 +79,7 @@ x_ghostknockoff = \(x, monte = 50, seed = 42) {
 #' data = cbind(x, y, z)
 #' kocmi::construct_ghostknockoff(data, 1, 2:3)
 #'
-construct_ghostknockoff = \(x, target, agent, monte = 50, seed = 42) {
+construct_ghostknockoff = \(x, target, agent, monte = 50, seed = NULL) {
   agent = sort(unique(agent))
   if(target %in% agent) stop("`target` and `agent` must be disjoint.")
   k.array = x_ghostknockoff(x[,c(target,agent),drop = FALSE], monte, seed)
