@@ -36,6 +36,6 @@ z = stats::rnorm(100)
 x = sin(z) + 0.01 * stats::rnorm(100)
 y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 data = cbind(x, y, z)
-kocmi::construct_ghostknockoff(data, 1, 1:3)
+kocmi::construct_ghostknockoff(data, 1, 2:3)
 
 }
