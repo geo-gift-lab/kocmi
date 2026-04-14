@@ -75,7 +75,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
-  run_single_node = \(i) {
+  run_single_pair = \(i) {
     vp = var_pairs[[i]]
     conds = setdiff(new_vars, vp)
 
@@ -92,28 +92,26 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
       mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff,
       type, nboots, k, 0, 1, seed, base, method, contain_null)
 
-    node_res = data.frame(
+    pair_res = data.frame(
       regulator = vars[vp],
-      target = res(vars[vp]),
+      target = rev(vars[vp]),
       t_stat = c(cs12[1], cs21[1]),
       p_value = c(cs12[2], cs21[2])
     )
 
-    return(node_res)
+    return(pair_res)
   }
 
   if (doclust) {
-    out_res = parallel::parLapply(cl, seq_along(var_pairs), run_single_node)
+    res = parallel::parLapply(cl, seq_along(var_pairs), run_single_pair)
   } else {
-    out_res = vector("list", length(var_pairs))
-    for (i in seq_along(var_pairs)) out_res[i] = run_single_node(i)
+    res = vector("list", length(var_pairs))
+    for (i in seq_along(var_pairs)) res[[i]] = run_single_pair(i)
   }
 
-  out_res = do.call(rbind, out_res)
-  return(out_res)
-  # return(data.frame(
-  #   regulator = rvi, target = tvi,
-  #   cs = abs(tv), t_stat = tv, p_value = pv,
-  #   p_adj = stats::p.adjust(pv,method = "BH")
-  # ))
+  res = do.call(rbind, res)
+  res$cs = abs(res$t_stat)
+  res$p_adj = stats::p.adjust(res$p_value,method = "BH")
+
+  return(res)
 }
