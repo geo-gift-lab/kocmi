@@ -1,4 +1,6 @@
-GhostKnockoff.prelim = \(cor.G, M=5, method="asdp", max.size=500){
+GhostKnockoff.prelim = \(cor.G, M=5, method="asdp", max.size=500, seed=NULL){
+  if (!is.null(seed)) set.seed(seed)
+
   temp.index = 1:nrow(cor.G)
   n.G = nrow(cor.G)
   #Permutation test for constant variants in the reference panel
@@ -15,7 +17,7 @@ GhostKnockoff.prelim = \(cor.G, M=5, method="asdp", max.size=500){
       temp.s = create.solve_sdp_M(Sigma,M=M)
     }
     if(method == "asdp"){
-      temp.s = create.solve_asdp_M(Sigma,M=M,max.size=max.size)
+      temp.s = create.solve_asdp_M(Sigma,M=M,max.size=max.size,seed=seed)
     }
     s = temp.s
     diag_s = diag(s,length(s))
@@ -141,7 +143,9 @@ create.solve_sdp_M = \(Sigma, M=1, gaptol=1e-6, maxit=1000, verbose=FALSE) {
   return(s*diag(Sigma))
 }
 
-create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbose=FALSE) {
+create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, seed = NULL, verbose=FALSE) {
+  if (!is.null(seed)) set.seed(seed)
+
   # Check that covariance matrix is symmetric
   stopifnot(Matrix::isSymmetric(Sigma))
 
@@ -149,7 +153,7 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
 
   # Approximate the covariance matrix as block diagonal
   if (verbose) cat(sprintf("Dividing the problem into subproblems of size <= %s ... ", max.size))
-  cluster_sol = divide.sdp(Sigma, max.size=max.size)
+  cluster_sol = divide.sdp(Sigma, max.size=max.size, seed=seed)
   n.blocks = max(cluster_sol$clusters)
   if (verbose) cat("done. \n")
 
@@ -203,7 +207,9 @@ create.solve_asdp_M = \(Sigma, M=1, max.size=500, gaptol=1e-6, maxit=1000, verbo
   return(s_asdp_scaled)
 }
 
-divide.sdp = \(Sigma, max.size) {
+divide.sdp = \(Sigma, max.size, seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+
   # Convert the covariance matrix into a dissimilarity matrix
   # Add a small perturbation to stabilize the clustering in the case of highly symmetrical matrices
   p = ncol(Sigma)

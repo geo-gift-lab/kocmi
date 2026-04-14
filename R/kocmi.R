@@ -26,12 +26,12 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
   type = match.arg(type)
   mat = infoxtr:::.convert2mat(data, contain_type = FALSE)
 
-  knockoff = construct_ghostknockoff(mat, regulator, conds, monte)
-
   null_knockoff = NULL
   if (contain_null) {
     null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte)
   }
+
+  knockoff = construct_ghostknockoff(mat, regulator, conds, monte)
 
   return(infoxtr:::RcppKOCMI(
             mat, target, regulator, conds, knockoff, null_knockoff, type,

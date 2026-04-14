@@ -24,14 +24,16 @@
 #' data = cbind(x, y, z)
 #' kocmi::x_ghostknockoff(data)
 #'
-x_ghostknockoff = \(x, monte = 50) {
+x_ghostknockoff = \(x, monte = 50, seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+
   cor.G = stats::cor(x)
   n.sample = nrow(x)
   n.G = ncol(x)
   x.knockoff = array(NA, dim = c(n.sample, n.G, monte),
                      dimnames = list(rownames(x), colnames(x), 1:monte))
 
-  knockoff = GhostKnockoff.prelim(cor.G, M = monte, method = "asdp")
+  knockoff = GhostKnockoff.prelim(cor.G, M = monte, method = "asdp", seed = seed)
   P.each = knockoff$P.each
   V.left = as.matrix(knockoff$V.left)
   permute.index = knockoff$permute.index
@@ -59,6 +61,7 @@ x_ghostknockoff = \(x, monte = 50) {
 #'   and columns correspond to variables.
 #' @param monte (optional) Number of Monte Carlo knockoff samples to generate.
 #'   Default is 50.
+#' @param seed (optional) Random seed for reproducibility of knockoff generation.
 #'
 #' @details
 #' The function applies ghost knockoff construction to the joint set of
@@ -76,9 +79,9 @@ x_ghostknockoff = \(x, monte = 50) {
 #' data = cbind(x, y, z)
 #' kocmi::construct_ghostknockoff(data, 1, 2:3)
 #'
-construct_ghostknockoff = \(x, target, agent, monte = 50) {
+construct_ghostknockoff = \(x, target, agent, monte = 50, seed = NULL) {
   agent = sort(unique(agent))
   if(target %in% agent) stop("`target` and `agent` must be disjoint.")
-  k.array = x_ghostknockoff(x[,c(target,agent),drop = FALSE], monte)
+  k.array = x_ghostknockoff(x[,c(target,agent),drop = FALSE], monte, seed)
   return(k.array[,1,])
 }
