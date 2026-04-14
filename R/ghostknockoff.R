@@ -81,5 +81,5 @@ x_ghostknockoff = \(x, monte = 50, seed = 42) {
 #'
 construct_ghostknockoff = \(x, target, agent, monte = 50, seed = 42) {
   k.array = x_ghostknockoff(x[,unique(c(target,agent)),drop = FALSE], monte, seed)
-  return(k.arraya[,1,])
+  return(k.array[,1,])
 }
