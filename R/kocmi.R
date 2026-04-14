@@ -91,7 +91,8 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
       regulator = vars[vp[1]],
       target = vars[vp[2]],
       t_stat = cs12[1],
-      p_value = cs12[2]
+      p_value = cs12[2],
+      row.names = NULL
     )
 
     return(pair_res)
