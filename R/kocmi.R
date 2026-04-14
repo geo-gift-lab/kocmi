@@ -82,7 +82,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
     vp_null_knockoff = NULL
     vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
-    if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[1]])
+    if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff,
       type, nboots, k, 0, 1, seed, base, method, contain_null)
