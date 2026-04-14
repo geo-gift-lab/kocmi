@@ -105,8 +105,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   if (doclust) {
     res = parallel::parLapply(cl, seq_along(var_pairs), run_single_pair)
   } else {
-    res = vector("list", length(var_pairs))
-    for (i in seq_along(var_pairs)) res[[i]] = run_single_pair(i)
+    res = lapply(seq_along(var_pairs), run_single_pair)
   }
 
   res = do.call(rbind, res)
