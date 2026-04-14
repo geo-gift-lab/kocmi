@@ -69,6 +69,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   if (threads > 1) {
     doclust = TRUE
     cl = parallel::makeCluster(threads)
+    parallel::clusterSetRNGStream(cl, seed)
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
