@@ -28,10 +28,10 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte)
+    null_knockoff = construct_ghostknockoff(mat, regulator, c(target,conds), monte, seed)
   }
 
-  knockoff = construct_ghostknockoff(mat, regulator, conds, monte)
+  knockoff = construct_ghostknockoff(mat, regulator, conds, monte, seed)
 
   return(infoxtr:::RcppKOCMI(
             mat, target, regulator, conds, knockoff, null_knockoff, type,
@@ -62,7 +62,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = kocmi::x_ghostknockoff(mat, monte)
+    null_knockoff = kocmi::x_ghostknockoff(mat, monte, seed)
   }
 
   doclust = FALSE
@@ -81,7 +81,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte)
+    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
     if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff,
