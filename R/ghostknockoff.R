@@ -80,6 +80,8 @@ x_ghostknockoff = \(x, monte = 50, seed = 42) {
 #' kocmi::construct_ghostknockoff(data, 1, 2:3)
 #'
 construct_ghostknockoff = \(x, target, agent, monte = 50, seed = 42) {
-  k.array = x_ghostknockoff(x[,unique(c(target,agent)),drop = FALSE], monte, seed)
+  agent = sort(unique(agent))
+  if(target %in% agent) stop("`target` and `agent` must be disjoint.")
+  k.array = x_ghostknockoff(x[,c(target,agent),drop = FALSE], monte, seed)
   return(k.array[,1,])
 }
