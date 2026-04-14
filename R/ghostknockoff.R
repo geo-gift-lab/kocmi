@@ -25,19 +25,19 @@
 #' kocmi::x_ghostknockoff(data)
 #'
 x_ghostknockoff = \(x, monte = 50, seed = NULL) {
-  if (!is.null(seed)) set.seed(seed)
-
   cor.G = stats::cor(x)
   n.sample = nrow(x)
   n.G = ncol(x)
   x.knockoff = array(NA, dim = c(n.sample, n.G, monte),
                      dimnames = list(rownames(x), colnames(x), 1:monte))
 
-  knockoff = GhostKnockoff.prelim(cor.G, M = monte, method = "asdp", seed = seed)
+  knockoff = GhostKnockoff.prelim(cor.G, M = monte, method = "asdp", seed = NULL)
   P.each = knockoff$P.each
   V.left = as.matrix(knockoff$V.left)
   permute.index = knockoff$permute.index
   permute.V.index = rep(permute.index, monte)
+
+  if (!is.null(seed)) set.seed(seed)
 
   Normal_50Studies = as.matrix(V.left %*% matrix(stats::rnorm(ncol(V.left) * n.sample), ncol(V.left), n.sample))  # 50 -> sample size
   Normal_50Studies[permute.V.index == 1, ] = matrix(
