@@ -74,7 +74,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   new_vars = seq_along(vars)
   var_pairs = utils::combn(new_vars, 2, simplify = FALSE)
-  var_pairs = c(var_pairs, rev(var_pairs))
+  var_pairs = c(var_pairs, lapply(var_pairs, rev))
 
   run_single_pair = \(i) {
     vp = var_pairs[[i]]
