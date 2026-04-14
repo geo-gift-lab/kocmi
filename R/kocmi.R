@@ -58,7 +58,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
               threads = 1, seed = 42, base = exp(1), method = "equal", contain_null = TRUE) {
   type = match.arg(type)
   vars = sort(unique(vars))
-  mat = infoxtr:::.convert2mat(data, type)[,vars,drop = FALSE]
+  mat = infoxtr:::.convert2mat(data, contain_type = FALSE)[,vars,drop = FALSE]
 
   null_knockoff = NULL
   if (contain_null) {
@@ -67,10 +67,6 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   new_vars = seq_along(vars)
   var_pairs = utils::combn(new_vars, 2, simplify = FALSE)
-  tvi = vector("integer", length(var_pairs)*2)
-  rvi = vector("integer", length(var_pairs)*2)
-  tv = vector("double", length(var_pairs)*2)
-  pv = vector("double", length(var_pairs)*2)
 
   doclust = FALSE
   if (threads > 1) {
@@ -89,31 +85,35 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     cs12 = infoxtr:::RcppKOCMI(
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff,
       type, nboots, k, 0, 1, seed, base, method, contain_null)
-    tvi[i] = vars[vp[2]]; rvi[i] = vars[vp[1]]
-    tv[i] = cs12[1]; pv[i] = cs12[2]
 
     vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[2], conds, monte, seed)
     if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
     cs21 = infoxtr:::RcppKOCMI(
       mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff,
       type, nboots, k, 0, 1, seed, base, method, contain_null)
-    tvi[i + length(var_pairs)] = vars[vp[1]]
-    rvi[i + length(var_pairs)] = vars[vp[2]]
-    tv[i + length(var_pairs)] = cs21[1]
-    pv[i + length(var_pairs)] = cs21[2]
 
-    return(i) # Just return as a marker of finishing
+    node_res = data.frame(
+      regulator = vars[vp],
+      target = res(vars[vp]),
+      t_stat = c(cs12[1], cs21[1]),
+      p_value = c(cs12[2], cs21[2])
+    )
+
+    return(node_res)
   }
 
   if (doclust) {
     out_res = parallel::parLapply(cl, seq_along(var_pairs), run_single_node)
   } else {
-    for (i in seq_along(var_pairs)) run_single_node(i)
+    out_res = vector("list", length(var_pairs))
+    for (i in seq_along(var_pairs)) out_res[i] = run_single_node(i)
   }
 
-  return(data.frame(
-    regulator = rvi, target = tvi,
-    cs = abs(tv), t_stat = tv, p_value = pv,
-    p_adj = stats::p.adjust(pv,method = "BH")
-  ))
+  out_res = do.call(rbind, out_res)
+  return(out_res)
+  # return(data.frame(
+  #   regulator = rvi, target = tvi,
+  #   cs = abs(tv), t_stat = tv, p_value = pv,
+  #   p_adj = stats::p.adjust(pv,method = "BH")
+  # ))
 }
