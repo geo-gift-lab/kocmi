@@ -62,7 +62,7 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
 
   null_knockoff = NULL
   if (contain_null) {
-    null_knockoff = kocmi::x_knockoff(mat, monte, seed)
+    null_knockoff = kocmi::x_ghostknockoff(mat, monte, seed)
   }
 
   new_vars = seq_along(vars)
