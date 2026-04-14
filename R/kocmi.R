@@ -24,7 +24,7 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
                  monte = 40, nboots = 1e4, k = 3, threads = 1, seed = 42,
                  base = exp(1), method = "equal", contain_null = TRUE) {
   type = match.arg(type)
-  mat = infoxtr:::.convert2mat(data, type)
+  mat = infoxtr:::.convert2mat(data, contain_type = FALSE)
 
   knockoff = construct_ghostknockoff(mat, regulator, conds, monte, seed)
 
