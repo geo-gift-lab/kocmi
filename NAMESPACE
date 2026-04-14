@@ -3,4 +3,4 @@
 export(construct_ghostknockoff)
 export(kocmi_net)
 export(kocmi_single)
-export(x_knockoff)
+export(x_ghostknockoff)
