@@ -65,15 +65,16 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     null_knockoff = kocmi::x_ghostknockoff(mat, monte, seed)
   }
 
-  new_vars = seq_along(vars)
-  var_pairs = utils::combn(new_vars, 2, simplify = FALSE)
-
   doclust = FALSE
   if (threads > 1) {
     doclust = TRUE
     cl = parallel::makeCluster(threads)
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
+
+  new_vars = seq_along(vars)
+  var_pairs = utils::combn(new_vars, 2, simplify = FALSE)
+  var_pairs = c(var_pairs, rev(var_pairs))
 
   run_single_pair = \(i) {
     vp = var_pairs[[i]]
@@ -86,17 +87,11 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
       mat, vp[2], vp[1], conds, vp_knockoff, vp_null_knockoff,
       type, nboots, k, 0, 1, seed, base, method, contain_null)
 
-    vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[2], conds, monte, seed)
-    if (contain_null) vp_null_knockoff = apply(null_knockoff, 3, \(.x) .x[,vp[2]])
-    cs21 = infoxtr:::RcppKOCMI(
-      mat, vp[1], vp[2], conds, vp_knockoff, vp_null_knockoff,
-      type, nboots, k, 0, 1, seed, base, method, contain_null)
-
     pair_res = data.frame(
-      regulator = vars[vp],
-      target = rev(vars[vp]),
-      t_stat = c(cs12[1], cs21[1]),
-      p_value = c(cs12[2], cs21[2])
+      regulator = vars[vp[1]],
+      target = vars[vp[2]],
+      t_stat = cs12[1],
+      p_value = cs12[2]
     )
 
     return(pair_res)
