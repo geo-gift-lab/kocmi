@@ -22,9 +22,9 @@
 #' x = sin(z) + 0.01 * stats::rnorm(100)
 #' y = sin(x) + exp(z) + 0.01 * stats::rnorm(100)
 #' data = cbind(x, y, z)
-#' kocmi::x_knockoff(data)
+#' kocmi::x_ghostknockoff(data)
 #'
-x_knockoff = \(x, monte = 50, seed = 42) {
+x_ghostknockoff = \(x, monte = 50, seed = 42) {
   set.seed(seed)
 
   cor.G = stats::cor(x)
@@ -80,6 +80,6 @@ x_knockoff = \(x, monte = 50, seed = 42) {
 #' kocmi::construct_ghostknockoff(data, 1, 1:3)
 #'
 construct_ghostknockoff = \(x, target, agent, monte = 50, seed = 42) {
-  k.array = x_knockoff(x[,c(target,agent),drop = FALSE], monte, seed)
+  k.array = x_ghostknockoff(x[,c(target,agent),drop = FALSE], monte, seed)
   return(apply(k.array, 3, \(.x) .x[,1]))
 }
