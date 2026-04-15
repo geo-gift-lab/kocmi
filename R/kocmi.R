@@ -60,10 +60,10 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   vars = sort(unique(vars))
   mat = infoxtr:::.convert2mat(data, contain_type = FALSE)[,vars,drop = FALSE]
 
-  # null_knockoff = NULL
-  # if (contain_null) {
-  #   null_knockoff = kocmi::x_ghostknockoff(mat, monte, seed)
-  # }
+  null_knockoff = NULL
+  if (contain_null) {
+    null_knockoff = kocmi::x_ghostknockoff(mat, monte, seed)
+  }
 
   doclust = FALSE
   if (threads > 1) {
@@ -82,10 +82,10 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    # if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
-    if (contain_null) {
-      vp_null_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], c(vp[2],conds), monte, seed)
-    }
+    if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
+    # if (contain_null) {
+    #   vp_null_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], c(vp[2],conds), monte, seed)
+    # }
 
     vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte, seed)
 
