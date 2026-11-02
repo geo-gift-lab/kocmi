@@ -38,8 +38,8 @@ or \code{"cont"} for continuous mutual information (KSG estimator).}
 test for evaluating the significance of the mean information difference.}
 
 \item{k}{(optional) For \code{type = "cont"}, the number of nearest neighbors used by
-the continuous conditional mutual information estimator.
-For \code{type = "disc"}, the number of bins used for discretization.}
+the continuous conditional mutual information estimator. For \code{type = "disc"}, the
+number of bins used for discretization.}
 
 \item{threads}{(optional) Number of threads used.}
 
