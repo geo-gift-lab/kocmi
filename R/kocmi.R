@@ -1,4 +1,4 @@
-#' Knockoff Conditional Mutual Information Test for Single Variable Pair
+#' KOCMI Test for Single Variable Pair
 #'
 #' @inheritParams infoxtr::kocmi
 #' @param regulator Integer vector of column indices for the regulator variable.
@@ -38,7 +38,7 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
             nboots, k, 0, threads, seed, base, method, contain_null))
 }
 
-#' Knockoff Conditional Mutual Information Test for Selected Variables
+#' KOCMI Test for Selected Variables
 #'
 #' @inheritParams kocmi_single
 #' @param vars Integer vector of column indices to include in kocmi calculation.
@@ -60,16 +60,16 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
   vars = sort(unique(vars))
   mat = infoxtr:::.convert2mat(data, contain_type = FALSE)[,vars,drop = FALSE]
 
-  null_knockoff = NULL
-  if (contain_null) {
-    null_knockoff = kocmi::x_ghostknockoff(mat, monte)
-  }
+  # null_knockoff = NULL
+  # if (contain_null) {
+  #   null_knockoff = kocmi::x_ghostknockoff(mat, monte)
+  # }
 
   doclust = FALSE
   if (threads > 1) {
     doclust = TRUE
     cl = parallel::makeCluster(threads)
-    # parallel::clusterSetRNGStream(cl, seed)
+    parallel::clusterSetRNGStream(cl, seed)
     on.exit(parallel::stopCluster(cl), add = TRUE)
   }
 
@@ -82,10 +82,10 @@ kocmi_net = \(data, vars, type = c("cont", "disc"), monte = 40, nboots = 1e4, k 
     conds = setdiff(new_vars, vp)
 
     vp_null_knockoff = NULL
-    if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
-    # if (contain_null) {
-    #   vp_null_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], c(vp[2],conds), monte)
-    # }
+    # if (contain_null) vp_null_knockoff = null_knockoff[,vp[1],]
+    if (contain_null) {
+      vp_null_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], c(vp[2],conds), monte)
+    }
 
     vp_knockoff = kocmi::construct_ghostknockoff(mat, vp[1], conds, monte)
 

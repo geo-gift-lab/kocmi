@@ -15,12 +15,17 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     gtools,
-    infoxtr,
+    infoxtr (>= 0.3),
     Matrix,
     parallel,
     Rdsdp,
     RSpectra,
     stats,
     utils
+Suggests: 
+    gdverse,
+    pc,
+    spEDM,
+    tEDM
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1
