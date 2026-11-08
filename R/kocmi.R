@@ -1,4 +1,4 @@
-#' Knockoff Conditional Mutual Information Test for Single Variable Pair
+#' KOCMI Test for Single Variable Pair
 #'
 #' @inheritParams infoxtr::kocmi
 #' @param regulator Integer vector of column indices for the regulator variable.
@@ -38,7 +38,7 @@ kocmi_single = \(data, target, regulator, conds, type = c("cont", "disc"),
             nboots, k, 0, threads, seed, base, method, contain_null))
 }
 
-#' Knockoff Conditional Mutual Information Test for Selected Variables
+#' KOCMI Test for Selected Variables
 #'
 #' @inheritParams kocmi_single
 #' @param vars Integer vector of column indices to include in kocmi calculation.
