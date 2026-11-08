@@ -2,26 +2,26 @@
 % Please edit documentation in R/ghostknockoff.R
 \name{construct_ghostknockoff}
 \alias{construct_ghostknockoff}
-\title{Construct Target-wise Ghost Knockoff Samples}
+\title{Construct Target-wise Ghost Knockoff Realizations}
 \usage{
 construct_ghostknockoff(x, target, agent, monte = 50)
 }
 \arguments{
-\item{x}{A numeric matrix of observations. Rows correspond to samples
+\item{x}{A numeric matrix of observations. Rows correspond to realizations
 and columns correspond to variables.}
 
 \item{target}{Integer vector of column indices for the target variables.}
 
 \item{agent}{Integer vector of column indices for the agent variables.}
 
-\item{monte}{(optional) Number of Monte Carlo knockoff samples to generate.
+\item{monte}{(optional) Number of Monte Carlo knockoff realizations to generate.
 Default is 50.}
 }
 \value{
 A numeric matrix.
 }
 \description{
-Construct Target-wise Ghost Knockoff Samples
+Construct Target-wise Ghost Knockoff Realizations
 }
 \details{
 The function applies ghost knockoff construction to the joint set of

@@ -2,23 +2,23 @@
 % Please edit documentation in R/ghostknockoff.R
 \name{x_ghostknockoff}
 \alias{x_ghostknockoff}
-\title{Generate Ghost Knockoff Samples}
+\title{Generate Ghost Knockoff Realizations}
 \usage{
 x_ghostknockoff(x, monte = 50)
 }
 \arguments{
-\item{x}{A numeric matrix of observations. Rows correspond to samples
+\item{x}{A numeric matrix of observations. Rows correspond to realizations
 and columns correspond to variables.}
 
-\item{monte}{(optional) Number of Monte Carlo knockoff samples to generate.
+\item{monte}{(optional) Number of Monte Carlo knockoff realizations to generate.
 Default is 50.}
 }
 \value{
 A numeric array of dimension
-\verb{(n_samples, n_variables, monte)} containing knockoff samples.
+\verb{(n_samples, n_variables, monte)} containing knockoff realizations.
 }
 \description{
-Generate Ghost Knockoff Samples
+Generate Ghost Knockoff Realizations
 }
 \details{
 The function first estimates the empirical correlation matrix of the input
