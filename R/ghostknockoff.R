@@ -52,12 +52,12 @@ x_ghostknockoff = \(x, monte = 50) {
   return(x.knockoff)
 }
 
-#' Construct Target-wise Ghost Knockoff Samples
+#' Construct Target-wise Ghost Knockoff Realizations
 #'
 #' @inheritParams infoxtr::surd
-#' @param x A numeric matrix of observations. Rows correspond to samples
+#' @param x A numeric matrix of observations. Rows correspond to realizations
 #'   and columns correspond to variables.
-#' @param monte (optional) Number of Monte Carlo knockoff samples to generate.
+#' @param monte (optional) Number of Monte Carlo knockoff realizations to generate.
 #'   Default is 50.
 #'
 #' @details
