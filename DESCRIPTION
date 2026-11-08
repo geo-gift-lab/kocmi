@@ -15,7 +15,7 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     gtools,
-    infoxtr,
+    infoxtr (>= 0.3),
     Matrix,
     parallel,
     Rdsdp,
