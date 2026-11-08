@@ -1,4 +1,4 @@
-#' Generate Ghost Knockoff Samples
+#' Generate Ghost Knockoff Realizations
 #'
 #' @inheritParams construct_ghostknockoff
 #'
@@ -13,7 +13,7 @@
 #' dimension corresponds to one Monte Carlo knockoff realization.
 #'
 #' @returns A numeric array of dimension
-#'   `(n_samples, n_variables, monte)` containing knockoff samples.
+#'   `(n_samples, n_variables, monte)` containing knockoff realizations.
 #' @export
 #'
 #' @examples
