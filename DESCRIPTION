@@ -22,5 +22,10 @@ Imports:
     RSpectra,
     stats,
     utils
+Suggests: 
+    gdverse,
+    pc,
+    spEDM,
+    tEDM
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1
