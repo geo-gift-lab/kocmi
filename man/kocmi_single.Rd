@@ -2,7 +2,7 @@
 % Please edit documentation in R/kocmi.R
 \name{kocmi_single}
 \alias{kocmi_single}
-\title{Knockoff Conditional Mutual Information Test for Single Variable Pair}
+\title{KOCMI Test for Single Variable Pair}
 \usage{
 kocmi_single(
   data,
@@ -62,7 +62,7 @@ used instead and compared against the knockoff estimates \eqn{I(Y; X_{knockoff} 
 A named numeric vector.
 }
 \description{
-Knockoff Conditional Mutual Information Test for Single Variable Pair
+KOCMI Test for Single Variable Pair
 }
 \examples{
 set.seed(42)

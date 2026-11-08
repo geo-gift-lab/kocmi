@@ -2,7 +2,7 @@
 % Please edit documentation in R/kocmi.R
 \name{kocmi_net}
 \alias{kocmi_net}
-\title{Knockoff Conditional Mutual Information Test for Selected Variables}
+\title{KOCMI Test for Selected Variables}
 \usage{
 kocmi_net(
   data,
@@ -56,7 +56,7 @@ used instead and compared against the knockoff estimates \eqn{I(Y; X_{knockoff} 
 A dataframe.
 }
 \description{
-Knockoff Conditional Mutual Information Test for Selected Variables
+KOCMI Test for Selected Variables
 }
 \examples{
 set.seed(42)
